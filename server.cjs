@@ -37,6 +37,13 @@ waitForElement = async (driver, xpath) => {
  * Word Guessing Endpoint
  * Route: /guess/
  * Params: word The word you wish to guess
+ * 
+ * Responses:
+ *    200, json -> Json containing results, a list of 5 ints[0-2]
+ *            0 => Gray/Absent
+ *            1 => Yellow/Present
+ *            2 => Green/Correct
+ *    400 -> Invalid param or out of guesses.
  */
 app.post('/guess/:word', async (req, res) => {
   const { word } = req.params;
@@ -95,7 +102,7 @@ app.post('/guess/:word', async (req, res) => {
       }
     }
     ++guess;
-    return res.status(200).send(result);
+    return res.status(200).json(result);
   } catch (err) {
     console.log(err.message);
   }
