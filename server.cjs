@@ -5,7 +5,7 @@ const { Options } = require('selenium-webdriver/chrome')
 const app = express()
 const port = 3000
 
-//**************************************************************//
+/********************************************************************************************************/
 // CONSTS
 
 // BROWSER TO USE
@@ -13,13 +13,13 @@ let BROWSER = Browser.CHROME
 // TIMEOUTS
 const TIMEOUT = 1000
 
-//**************************************************************//
+/********************************************************************************************************/
 // GLOBALS
 
 let guess = 1
 let driver
 
-//**************************************************************//
+/********************************************************************************************************/
 // HELPERS
 
 clickElement = async (driver, xpath) => {
@@ -30,9 +30,14 @@ waitForElement = async (driver, xpath) => {
   await driver.wait(until.elementIsVisible(driver.findElement(By.xpath(xpath))))
 }
 
-//**************************************************************//
+/********************************************************************************************************/
 // ENDPOINTS
 
+/*
+ * Word Guessing Endpoint
+ * Route: /guess/
+ * Params: word The word you wish to guess
+ */
 app.post('/guess/:word', async (req, res) => {
   const { word } = req.params;
 
@@ -41,7 +46,7 @@ app.post('/guess/:word', async (req, res) => {
     return res.status(400).send("Incorrect word size", word);
   }
 
-  // Reset guesses if failed.
+  // Out of guesses
   if (guess == 6) {
     return res.status(400).send("You've run out of guesses!");
   }
@@ -52,6 +57,7 @@ app.post('/guess/:word', async (req, res) => {
     // Check if page open
     let title = await driver.getTitle()
     if (title != 'Wordle — The New York Times') {
+      // Open browser to standard wordle page
       await driver.manage().setTimeouts({ implicit: TIMEOUT });
       await driver.get('https://www.nytimes.com/games/wordle/index.html')
       await driver.wait(until.titleIs('Wordle — The New York Times'))
@@ -95,7 +101,7 @@ app.post('/guess/:word', async (req, res) => {
   }
 })
 
-//**************************************************************//
+/********************************************************************************************************/
 
 app.listen(port, () => {
   console.log(`Server up at http://127.0.0.1:${port}`)
